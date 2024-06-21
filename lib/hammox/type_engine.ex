@@ -1,6 +1,7 @@
 defmodule Hammox.TypeEngine do
   @moduledoc false
 
+  require Record
   alias Hammox.Cache
   alias Hammox.Utils
 
@@ -382,6 +383,14 @@ defmodule Hammox.TypeEngine do
 
   def match_type(value, {:type, _, :term, []}) do
     match_type(value, {:type, 0, :any, []})
+  end
+
+  def match_type(value, {:type, _, :record, _}) when Record.is_record(value) do
+    :ok
+  end
+
+  def match_type(value, {:type, _, :record, _} = type) do
+    type_mismatch(value, type)
   end
 
   def match_type(value, {:type, _, :arity, []}) do
